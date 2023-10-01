@@ -1,5 +1,6 @@
 package service;
 
+import avl.Node;
 import avl.TreeAVL;
 import database.AlunoDAO;
 import model.Aluno;
@@ -27,14 +28,13 @@ public class AlunoTreeService {
         }
     }
 
-/*    public void AtualizarAluno(Aluno aluno, boolean saveDataBase) {
 
-        alunosTree.update(aluno);
-
-        if (saveDataBase){
-            alunoDAO.update(aluno);
-        }
-    }*/
+    public void seartch( int matricula){
+     Node node = alunosTree.search(matricula);
+     if (node != null){
+         System.out.println("aluno encontrado: "+ node.getAluno());
+     }else System.out.println("aluno não encontrado");
+    }
 
     public void  ListarAlunos() {
          getAlunosTree().displayTree();
@@ -45,6 +45,10 @@ public class AlunoTreeService {
     public void  refreshTree(){
         alunosTree.clear();
         setAlunosTree(alunoDAO.List());
+    }
+    public  void  contarAlunos(){
+        System.out.println("existem um total de :"+alunosTree.contarAlunos()+ "alunos Armazenados");
+
     }
 
     public TreeAVL getAlunosTree() {

@@ -50,13 +50,11 @@ public class TreeAVL {
         return node;
 
     }
-    public boolean deleteByMatricula(int matricula){
+    public void deleteByMatricula(int matricula){
         if (deleteByMatriculaRec(matricula)){
             System.out.println("deletado com sucesso!!");
-            return true;
         }else {
             System.out.println("não foi possivel deletar");
-            return false;
         }
     }
     private boolean deleteByMatriculaRec(int matricula) {
@@ -98,7 +96,7 @@ public class TreeAVL {
 
         else {
             Node successor = findSuccessor(alunoNode);
-            Node successorFather = searchFather(successor.getAluno());
+            searchFather(successor.getAluno());
             alunoNode.setAluno(successor.getAluno());
             deleteByMatriculaRec(successor.getAluno().getMatricula());
             setRoot(Balance(getRoot()));
@@ -133,7 +131,21 @@ public class TreeAVL {
         node.setHeight(max(height(node.getNodeLeft()), height(node.getNodeRight())) + 1);
         return node;
     }
+/*    private Node rightRotation(Node node) {
+        if (node == null || node.getNodeLeft() == null) {
+            return node;
+        }
 
+        Node temp = node.getNodeLeft();
+
+        node.setNodeLeft(temp.getNodeRight());
+        temp.setNodeRight(node);
+
+        node.setHeight(Math.max(height(node.getNodeLeft()), height(node.getNodeRight())) + 1);
+        temp.setHeight(Math.max(height(temp.getNodeLeft()), height(temp.getNodeRight())) + 1);
+
+        return temp;
+    }*/
 
     private Node rightRotation(Node node) {
         Node temp = node.getNodeLeft();
@@ -257,6 +269,20 @@ public class TreeAVL {
             displaySubTree(node.getNodeLeft(), "     " + separator);
             displaySubTree(node.getNodeRight(), "     " + separator);
         }
+    }
+    public int contarAlunos() {
+        return contarAlunosRec(getRoot());
+    }
+
+    private int contarAlunosRec(Node node) {
+        if (node == null) {
+            return 0;
+        }
+
+        int totalEsquerda = contarAlunosRec(node.getNodeLeft());
+        int totalDireita = contarAlunosRec(node.getNodeRight());
+
+        return totalEsquerda + totalDireita + 1; // 1 para contar o próprio nó (aluno)
     }
 }
 
