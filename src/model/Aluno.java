@@ -2,10 +2,9 @@ package model;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class Aluno implements Serializable {
-    private Long id;
+
     private int matricula;
     private String nome;
     private  int faltas;
@@ -15,21 +14,15 @@ public class Aluno implements Serializable {
     public Aluno() {
     }
 
-    public Aluno(Long id, int matricula, String nome, int faltas, double[] notas) {
-        this.id = id;
+    public Aluno(int matricula, String nome, int faltas, double[] notas) {
+
         this.matricula = matricula;
         this.nome = nome;
         this.faltas = faltas;
         this.notas = notas;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public int getMatricula() {
         return matricula;
@@ -63,24 +56,19 @@ public class Aluno implements Serializable {
         this.notas = notas;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Aluno aluno = (Aluno) o;
-        return matricula == aluno.matricula && Objects.equals(id, aluno.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, matricula);
+        return matricula == aluno.matricula;
     }
 
     @Override
     public String toString() {
         return "Aluno{" +
-                "id=" + id +
-                ", matricula=" + matricula +
+                "matricula=" + matricula +
                 ", nome='" + nome + '\'' +
                 ", faltas=" + faltas +
                 ", notas=" + Arrays.toString(notas) +
