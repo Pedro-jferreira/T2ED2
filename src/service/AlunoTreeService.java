@@ -7,63 +7,63 @@ import model.Aluno;
 
 public class AlunoTreeService {
     private TreeAVL alunosTree;
-    private AlunoDAO alunoDAO;
+    private final AlunoDAO alunoDAO;
 
     public AlunoTreeService() {
         this.alunosTree = new TreeAVL();
         this.alunoDAO = new AlunoDAO();
     }
 
-    public void insertAluno(Aluno aluno, boolean saveDataBase) {
+    public void insertAluno(Aluno aluno) {
         alunosTree.insert(aluno);
-        if (saveDataBase) {
-            alunoDAO.Save(aluno);
+
+    }
+
+    public boolean searchByMatricula(int matricula) {
+        Node node = alunosTree.searchByMatricula(matricula);
+        if (node != null) {
+            System.out.println("aluno encontrado: " + node.getAluno());
+            return true;
+        } else {
+            System.out.println("aluno não encontrado");
+            return false;
         }
     }
 
-    public void deleteAlunoByMatricula(int matricula, boolean saveDataBase) {
+    public void updateAlunoByMatricula(int matricula, Aluno novoAluno) {
+        getAlunosTree().updateAlunoByMatricula(matricula, novoAluno);
+    }
+
+    public void deleteAlunoByMatricula(int matricula) {
         alunosTree.deleteByMatricula(matricula);
-        if (saveDataBase) {
-            alunoDAO.delete(alunosTree);
-        }
-    }
-
-
-    public void seartch( int matricula){
-     Node node = alunosTree.search(matricula);
-     if (node != null){
-         System.out.println("aluno encontrado: "+ node.getAluno());
-     }else System.out.println("aluno não encontrado");
-    }
-
-    public void  ListarAlunos() {
-         getAlunosTree().displayTree();
-    }
-    public  void displayTree(){
 
     }
-    public void  refreshTree(){
+
+    public void displayTree() {
+        getAlunosTree().displayTree();
+
+    }
+
+    public void refreshTree() {
         alunosTree.clear();
-        setAlunosTree(alunoDAO.List());
+        this.alunosTree = alunoDAO.listTreeAvl();
     }
-    public  void  contarAlunos(){
-        System.out.println("existem um total de :"+alunosTree.contarAlunos()+ "alunos Armazenados");
 
+    public void treeCount() {
+        System.out.println("existem um total de :" + alunosTree.treeCount() + " alunos registrados");
+
+    }
+
+    public void finallyApp() {
+        getAlunoDAO().finallyApp(alunosTree);
     }
 
     public TreeAVL getAlunosTree() {
         return alunosTree;
     }
 
-    private void setAlunosTree(TreeAVL alunosTree) {
-        this.alunosTree = alunosTree;
-    }
-
     public AlunoDAO getAlunoDAO() {
         return alunoDAO;
     }
 
-    private void setAlunoDAO(AlunoDAO alunoDAO) {
-        this.alunoDAO = alunoDAO;
-    }
 }

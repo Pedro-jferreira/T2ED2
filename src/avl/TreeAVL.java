@@ -9,6 +9,60 @@ public class TreeAVL {
         this.root = null;
     }
 
+    public void insert(Aluno aluno) {
+        setRoot(insertRec(getRoot(), aluno));
+    }
+
+    public Node searchByMatricula(int matricula) {
+        return searchRec(getRoot(), matricula);
+    }
+
+    public void updateAlunoByMatricula(int matricula, Aluno novoAluno) {
+        Node alunoNode = searchRec(getRoot(), matricula);
+        if (alunoNode != null) {
+            alunoNode.setAluno(novoAluno);
+            setRoot(Balance(getRoot()));
+            System.out.println("Aluno com matrícula " + matricula + " atualizado com sucesso.");
+        } else {
+            System.out.println("Aluno com matrícula " + matricula + " não encontrado.");
+        }
+    }
+
+    public void deleteByMatricula(int matricula) {
+        if (deleteByMatriculaRec(matricula)) {
+            System.out.println("deletado com sucesso!!");
+        } else {
+            System.out.println("não foi possível excluir");
+        }
+    }
+
+    public int treeCount() {
+        return treeCountRec(getRoot());
+    }
+
+    public void displayTree() {
+        if (isEmpty()) {
+            System.out.println("árvore vazia!");
+            return;
+        }
+        String separator = "  |__";
+        System.out.println(getRoot().getAluno() + "(" + getRoot().getHeight() + ")");
+        displaySubTree(getRoot().getNodeLeft(), separator);
+        displaySubTree(getRoot().getNodeRight(), separator);
+    }
+
+    public String inOrder() {
+        return inOrderRec(getRoot(), new StringBuilder());
+    }
+
+    public void preOrder() {
+        preOrderRec(getRoot());
+    }
+
+    public void posOrder() {
+        posOrderRec(getRoot());
+    }
+
     public void clear() {
         setRoot(null);
     }
@@ -19,24 +73,6 @@ public class TreeAVL {
 
     public Node getRoot() {
         return root;
-    }
-
-    private void setRoot(Node root) {
-        this.root = root;
-    }
-
-    private int height(Node node) {
-        return node == null ? -1 : node.getHeight();
-    }
-
-    private int max(int lhs, int rhs) {
-        return Math.max(lhs, rhs);
-
-    }
-
-
-    public void insert(Aluno aluno) {
-        setRoot(insertRec(getRoot(), aluno));
     }
 
     private Node insertRec(Node node, Aluno aluno) {
@@ -50,13 +86,19 @@ public class TreeAVL {
         return node;
 
     }
-    public void deleteByMatricula(int matricula){
-        if (deleteByMatriculaRec(matricula)){
-            System.out.println("deletado com sucesso!!");
-        }else {
-            System.out.println("não foi possivel deletar");
+
+    private Node searchRec(Node node, int matricula) {
+        while (node != null) {
+            if (matricula == node.getAluno().getMatricula())
+                return node;
+            else if (matricula < node.getAluno().getMatricula())
+                node = node.getNodeLeft();
+            else
+                node = node.getNodeRight();
         }
+        return null;
     }
+
     private boolean deleteByMatriculaRec(int matricula) {
         if (isEmpty()) {
             return false;
@@ -64,7 +106,6 @@ public class TreeAVL {
 
         Node alunoNode = searchRec(getRoot(), matricula);
         Node alunoFatherNode = searchFather(alunoNode.getAluno());
-
 
         if (alunoNode.getNodeLeft() == null && alunoNode.getNodeRight() == null) {
             if (alunoFatherNode != null) {
@@ -77,9 +118,7 @@ public class TreeAVL {
             } else {
                 setRoot(null);
             }
-        }
-
-        else if (alunoNode.getNodeLeft() == null || alunoNode.getNodeRight() == null) {
+        } else if (alunoNode.getNodeLeft() == null || alunoNode.getNodeRight() == null) {
             Node child = (alunoNode.getNodeLeft() != null) ? alunoNode.getNodeLeft() : alunoNode.getNodeRight();
 
             if (alunoFatherNode != null) {
@@ -92,9 +131,7 @@ public class TreeAVL {
             } else {
                 setRoot(child);
             }
-        }
-
-        else {
+        } else {
             Node successor = findSuccessor(alunoNode);
             searchFather(successor.getAluno());
             alunoNode.setAluno(successor.getAluno());
@@ -106,46 +143,66 @@ public class TreeAVL {
         return true;
     }
 
-    private Node findSuccessor(Node node) {
-        Node current = node.getNodeRight();
-        while (current != null && current.getNodeLeft() != null) {
-            current = current.getNodeLeft();
-        }
-        return current;
-    }
-
-
-    private int getFactor(Node node) {
-        return height(node.getNodeLeft()) - height(node.getNodeRight());
-    }
-
-
-    private Node Balance(Node node) {
-        if (getFactor(node) == 2) {
-            if (getFactor(node.getNodeLeft()) > 0) node = rightRotation(node);
-            else node = doubleRightRotation(node);
-        } else if (getFactor(node) == -2) {
-            if (getFactor(node.getNodeRight()) < 0) node = leftRotation(node);
-            else node = doubleLeftRotation(node);
-        }
-        node.setHeight(max(height(node.getNodeLeft()), height(node.getNodeRight())) + 1);
-        return node;
-    }
-/*    private Node rightRotation(Node node) {
-        if (node == null || node.getNodeLeft() == null) {
-            return node;
+    private int treeCountRec(Node node) {
+        if (node == null) {
+            return 0;
         }
 
-        Node temp = node.getNodeLeft();
+        int totalEsquerda = 0;
+        int totalDireita = 0;
 
-        node.setNodeLeft(temp.getNodeRight());
-        temp.setNodeRight(node);
+        if (node.getNodeLeft() != null) {
+            totalEsquerda = treeCountRec(node.getNodeLeft());
+        }
 
-        node.setHeight(Math.max(height(node.getNodeLeft()), height(node.getNodeRight())) + 1);
-        temp.setHeight(Math.max(height(temp.getNodeLeft()), height(temp.getNodeRight())) + 1);
+        if (node.getNodeRight() != null) {
+            totalDireita = treeCountRec(node.getNodeRight());
+        }
 
-        return temp;
-    }*/
+        return totalEsquerda + totalDireita + 1;
+    }
+
+    private void displaySubTree(Node node, String separator) {
+
+        if (node != null) {
+
+            Node father = this.searchFather(node.getAluno());
+            assert father != null;
+            if (node.equals(father.getNodeLeft())) {
+                System.out.println(separator + node.getAluno() + "(" + node.getHeight() + ")" + " (ESQ)");
+            } else {
+                System.out.println(separator + node.getAluno() + "(" + node.getHeight() + ")" + " (DIR)");
+            }
+            displaySubTree(node.getNodeLeft(), "     " + separator);
+            displaySubTree(node.getNodeRight(), "     " + separator);
+        }
+    }
+
+    private String inOrderRec(Node node, StringBuilder builder) {
+
+        if (node != null) {
+            inOrderRec(node.getNodeLeft(), builder);
+            builder.append(node.getAluno()).append("\n");
+            inOrderRec(node.getNodeRight(), builder);
+        }
+        return String.valueOf(builder);
+    }
+
+    private void preOrderRec(Node node) {
+        if (node != null) {
+            System.out.print(node.getAluno() + "\n");
+            preOrderRec(node.getNodeLeft());
+            preOrderRec(node.getNodeRight());
+        }
+    }
+
+    private void posOrderRec(Node node) {
+        if (node != null) {
+            posOrderRec(node.getNodeLeft());
+            posOrderRec(node.getNodeRight());
+            System.out.print(node.getAluno() + "\n");
+        }
+    }
 
     private Node rightRotation(Node node) {
         Node temp = node.getNodeLeft();
@@ -158,7 +215,6 @@ public class TreeAVL {
 
         return temp;
     }
-
 
     private Node leftRotation(Node node) {
         Node temp = node.getNodeRight();
@@ -182,108 +238,58 @@ public class TreeAVL {
     }
 
 
-    public Node search(int matricula) {
-        return searchRec(getRoot(), matricula);
-    }
-
-    private Node searchRec(Node node, int matricula) {
-        while (node != null) {
-            if (matricula == node.getAluno().getMatricula()) return node;
-            else if (matricula < node.getAluno().getMatricula()) node = node.getNodeLeft();
-            else node = node.getNodeRight();
-        }
-        return null;
-    }
-
-    protected Node searchFather(Aluno aluno) {
+    private Node searchFather(Aluno aluno) {
         Node root = getRoot();
         Node temp = null;
         while (root != null && !(root.getAluno().getMatricula() == aluno.getMatricula())) {
             temp = root;
             if (root.getAluno().getMatricula() < aluno.getMatricula())
                 root = root.getNodeRight();
-            else root = root.getNodeLeft();
+            else
+                root = root.getNodeLeft();
         }
-        if (root != null && root.getAluno().getMatricula() == aluno.getMatricula()) return temp;
+        if (root != null && root.getAluno().getMatricula() == aluno.getMatricula())
+            return temp;
         return null;
     }
 
-    public void inOrder() {
-        inOrderRec(getRoot());
-    }
-
-    private void inOrderRec(Node node) {
-        if (node != null) {
-            inOrderRec(node.getNodeLeft());
-            System.out.print(node.getAluno() + "\n");
-            inOrderRec(node.getNodeRight());
+    private Node Balance(Node node) {
+        if (getFactor(node) == 2) {
+            if (getFactor(node.getNodeLeft()) > 0)
+                node = rightRotation(node);
+            else
+                node = doubleRightRotation(node);
+        } else if (getFactor(node) == -2) {
+            if (getFactor(node.getNodeRight()) < 0)
+                node = leftRotation(node);
+            else
+                node = doubleLeftRotation(node);
         }
+        node.setHeight(max(height(node.getNodeLeft()), height(node.getNodeRight())) + 1);
+        return node;
     }
 
-    public void preOrder() {
-        preOrderRec(getRoot());
-    }
-
-    private void preOrderRec(Node node) {
-        if (node != null) {
-            System.out.print(node.getAluno() + "\n");
-            preOrderRec(node.getNodeLeft());
-            preOrderRec(node.getNodeRight());
+    private Node findSuccessor(Node node) {
+        Node current = node.getNodeRight();
+        while (current != null && current.getNodeLeft() != null) {
+            current = current.getNodeLeft();
         }
+        return current;
     }
 
-    public void posOrder() {
-        posOrderRec(getRoot());
+    private void setRoot(Node root) {
+        this.root = root;
     }
 
-    private void posOrderRec(Node node) {
-        if (node != null) {
-            posOrderRec(node.getNodeLeft());
-            posOrderRec(node.getNodeRight());
-            System.out.print(node.getAluno() + "\n");
-        }
+    private int height(Node node) {
+        return node == null ? -1 : node.getHeight();
     }
 
-
-    public void displayTree() {
-        if (isEmpty()) {
-            System.out.println("árvore vazia!");
-            return;
-        }
-        String separator = "  |__";
-        System.out.println(getRoot().getAluno() + "(" + getRoot().getHeight() + ")");
-        displaySubTree(getRoot().getNodeLeft(), separator);
-        displaySubTree(getRoot().getNodeRight(), separator);
+    private int max(int lhs, int rhs) {
+        return Math.max(lhs, rhs);
     }
 
-    private void displaySubTree(Node node, String separator) {
-
-        if (node != null) {
-
-            Node father = this.searchFather(node.getAluno());
-            if (node.equals(father.getNodeLeft())) {
-                System.out.println(separator + node.getAluno() + "(" + node.getHeight() + ")" + " (ESQ)");
-            } else {
-                System.out.println(separator + node.getAluno() + "(" + node.getHeight() + ")" + " (DIR)");
-            }
-            displaySubTree(node.getNodeLeft(), "     " + separator);
-            displaySubTree(node.getNodeRight(), "     " + separator);
-        }
-    }
-    public int contarAlunos() {
-        return contarAlunosRec(getRoot());
-    }
-
-    private int contarAlunosRec(Node node) {
-        if (node == null) {
-            return 0;
-        }
-
-        int totalEsquerda = contarAlunosRec(node.getNodeLeft());
-        int totalDireita = contarAlunosRec(node.getNodeRight());
-
-        return totalEsquerda + totalDireita + 1; // 1 para contar o próprio nó (aluno)
+    private int getFactor(Node node) {
+        return height(node.getNodeLeft()) - height(node.getNodeRight());
     }
 }
-
-
