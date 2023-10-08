@@ -120,11 +120,17 @@ public class TelaPrincipalController {
     }
     /**
      * método chamado quando o botão de inserir é ativado.
+     * O método confere se a matrícula inserida já está cadastrada antes de cadastrar o novo Aluno.
      * O método service.insertAluno insere o nó do objeto Aluno na árvore balanceada.
      */
     private void inserirAluno(){
         aluno = new Aluno();
-        aluno.setMatricula(Integer.parseInt(alunoGUI.getMatricula_txt().getText()));
+        int matricula = Integer.parseInt(alunoGUI.getMatricula_txt().getText());
+        if (confereMatricula(matricula)){
+            JOptionPane.showMessageDialog(null, "Matrícula já utilizada, tente outra!", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        aluno.setMatricula(matricula); 
         aluno.setNome(alunoGUI.getNome_txt().getText());
         aluno.setFaltas(0);
         Double[] notas = {0.0,0.0,0.0};
@@ -134,11 +140,29 @@ public class TelaPrincipalController {
         limparCampos();
     }
     /**
+     * Método para conferir a matrícula no banco de dados existente.
+     */
+    private boolean confereMatricula(int matricula){
+        List<Aluno> alunos = service.inOrderList();
+        aluno = new Aluno();
+        for (Aluno aluno2 : alunos) {
+            if (matricula == aluno2.getMatricula()){
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
      * método chamado quando o botão de buscar aluno ou pesquisar é ativado.
      * O método service.searchByMatricula retorna o objeto Aluno existente na árvore balanceada.
      */
     private void buscarAluno(){
         int matricula = Integer.parseInt(alunoGUI.getMatricula_txt().getText());
+        if (!confereMatricula(matricula)){
+            JOptionPane.showMessageDialog(null, "Esta matrícula não existe na base!", "Erro", JOptionPane.ERROR_MESSAGE);
+            limparCampos();
+            return;
+        }
         aluno = service.searchByMatricula(matricula).getAluno();
         alunoGUI.setNome_txt(aluno.getNome());
         alunoGUI.setFaltas_txt(String.valueOf(aluno.getFaltas()));
@@ -180,6 +204,7 @@ public class TelaPrincipalController {
         aluno.setNotas(notas);
         JOptionPane.showMessageDialog(null, "Notas atualizadas com sucesso!", "Salvar Notas", JOptionPane.INFORMATION_MESSAGE); 
         service.updateAlunoByMatricula(matricula, aluno);
+        limparCampos();
     }
     /**
      * método chamado quando o botão de excluir aluno é ativado.
@@ -188,6 +213,11 @@ public class TelaPrincipalController {
     private void excluirAluno(){
         buscarAluno();
         int matricula = Integer.parseInt(alunoGUI.getMatricula_txt().getText());
+        if (!confereMatricula(matricula)){
+            JOptionPane.showMessageDialog(null, "Esta matrícula não existe na base!", "Erro", JOptionPane.ERROR_MESSAGE);
+            limparCampos();
+            return;
+        }
         service.deleteAlunoByMatricula(matricula);
         limparCampos();
         JOptionPane.showMessageDialog(null, "Aluno excluído com sucesso!", "Excluir Aluno", JOptionPane.INFORMATION_MESSAGE); 
