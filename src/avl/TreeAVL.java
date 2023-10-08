@@ -1,5 +1,8 @@
 package avl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.Aluno;
 
 public class TreeAVL {
@@ -53,6 +56,10 @@ public class TreeAVL {
 
     public String inOrder() {
         return inOrderRec(getRoot(), new StringBuilder());
+    }
+
+    public List<Aluno> inOrderList() {
+        return inOrderRecList(getRoot(), new ArrayList<>());
     }
 
     public void preOrder() {
@@ -187,6 +194,15 @@ public class TreeAVL {
         }
         return String.valueOf(builder);
     }
+
+    private List<Aluno> inOrderRecList(Node node, List<Aluno> alunoList) {
+    if (node != null) {
+        inOrderRecList(node.getNodeLeft(), alunoList);
+        alunoList.add(node.getAluno());
+        inOrderRecList(node.getNodeRight(), alunoList);
+    }
+    return alunoList;
+}
 
     private void preOrderRec(Node node) {
         if (node != null) {

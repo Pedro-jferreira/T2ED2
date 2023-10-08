@@ -1,5 +1,7 @@
 package service;
 
+import java.util.List;
+
 import avl.Node;
 import avl.TreeAVL;
 import database.AlunoDAO;
@@ -19,14 +21,14 @@ public class AlunoTreeService {
 
     }
 
-    public boolean searchByMatricula(int matricula) {
+    public Node searchByMatricula(int matricula) {
         Node node = alunosTree.searchByMatricula(matricula);
         if (node != null) {
             System.out.println("aluno encontrado: " + node.getAluno());
-            return true;
+            return node;
         } else {
             System.out.println("aluno não encontrado");
-            return false;
+            return null;
         }
     }
 
@@ -41,6 +43,16 @@ public class AlunoTreeService {
 
     public void displayTree() {
         getAlunosTree().displayTree();
+
+    }
+
+    public String inOrder(){
+        return getAlunosTree().inOrder();
+
+    }
+
+    public List<Aluno> inOrderList(){
+        return getAlunosTree().inOrderList();
 
     }
 
