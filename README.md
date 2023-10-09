@@ -1,5 +1,10 @@
-# T2ED2
-atividade de implantação de uma arvore avl, para a matéria de estrutura de dados 2, do 4° periodo de sistemas de informação
+Instituto Federal Goiano – Campus Urutaí
+Sistemas de Informação – 4º Período
+Disciplina: Estrutura de Dados 2
+Prof. Junio Cesar de Lima.
+Alunos: Ariana Mesquita Gonçalves e Pedro Henrique de Jesus Ferreira.
+
+Atividade 2 – Implementação sobre Árvore Binária de Busca AVL.
 
 Para rodar a aplicação abrir o App.java e dar play.
 Ele abre direto na tela inicial da aplicação onde é possível ver à esquerda os botões de "Inserir Aluno", "Excluir Aluno",
@@ -41,5 +46,12 @@ O passo para lançar notas ou atualizar notas é o seguinte:
     - já pode conferir em "Listar Alunos".
 
 Para sair da aplicação é só clicar, a qualquer momento, o botão "Sair" na barra de navegação à esquerda.
+
+O software sempre se inicia com 22 alunos já pré-estabelecidos e que, ao final, podem ser verificados todos os alunos inseridos ou removidos no arquivo .txt com pré-definição para o excel.
+
+Os possíveis problemas do sistema iniciam quando são inseridos mais de 10 mil alunos na aplicação, a nível de back-end e árvore. 
+
+O sistema foi codificado no IntelliJ e no VS Code, orientamos o uso de uma dessas IDEs, mas ele deve rodar tranquilamente em outros também. Existe uma variação a nível de telas e desempenho das mesmas quando rodar em computadores com configuração de tela superior a 1366 x 768 pixels, computadores com full HD podem apresentar variações do projeto original.
+
 
 Muito Obrigada!
